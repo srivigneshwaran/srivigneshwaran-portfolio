@@ -262,7 +262,7 @@ function App() {
           </p>
           <div className="flex gap-6">
             <a href="https://github.com/SRIVIGNESHWARAN" className="text-slate-400 hover:text-indigo-600 transition-colors font-medium">GitHub</a>
-            <a href="https://linkedin.com/in/SRIVIGNESHWARANI" className="text-slate-400 hover:text-indigo-600 transition-colors font-medium">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/srivigneshwaran-i-115163229/" className="text-slate-400 hover:text-indigo-600 transition-colors font-medium">LinkedIn</a>
           </div>
         </div>
       </footer>
