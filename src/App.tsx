@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, ExternalLink, Code2, Database, Layout, Terminal, Server, Award, ChevronRight, Moon, Sun, Download, User, Trophy, MessageSquare, Send } from 'lucide-react';
+import { Mail, ExternalLink, Code2, Database, Layout, Terminal, Server, Award, ChevronRight, Moon, Sun, Download, User, MessageSquare, Send } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -125,7 +125,7 @@ function App() {
               <button onClick={(e) => scrollToSection(e, 'contact')} className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg shadow-indigo-200 dark:shadow-none flex items-center justify-center gap-2">
                 <Mail className="w-4 h-4" /> Get In Touch
               </button>
-              <a href="/resume.pdf" download className="w-full sm:w-auto bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2">
+              <a href="https://drive.google.com/file/d/1YpLOe402JcyR5mwES-Jie9k8DxgW_Kk4/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-8 py-3 rounded-full font-medium transition-all transform hover:scale-105 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2">
                 <Download className="w-4 h-4" /> Download Resume
               </a>
             </div>
