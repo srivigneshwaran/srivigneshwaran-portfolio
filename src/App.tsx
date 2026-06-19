@@ -3,6 +3,10 @@ import { Mail, ExternalLink, Code2, Database, Layout, Terminal, Server, Award, C
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
+import drImage from './assets/DR.png';
+import smtImage from './assets/SMT.png';
+import pyDsaImage from './assets/pyDSA.png';
+
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -230,10 +234,10 @@ function App() {
                 variants={fadeInUp}
                 className="bg-slate-50 dark:bg-[#111827] rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 grid md:grid-cols-2 transition-all hover:shadow-xl dark:hover:shadow-indigo-900/20 hover:border-indigo-200 dark:hover:border-indigo-800 group"
               >
-                {/* Image Placeholder */}
-                <div className="bg-slate-200 dark:bg-slate-800/50 min-h-[250px] md:min-h-full flex items-center justify-center p-8 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-violet-500/20 mix-blend-overlay"></div>
-                  <Code2 className="w-16 h-16 text-slate-400 dark:text-slate-600 opacity-50 group-hover:scale-110 transition-transform duration-500" />
+                {/* Image Container */}
+                <div className="bg-slate-200 dark:bg-slate-800/50 min-h-[250px] md:min-h-full flex items-center justify-center relative overflow-hidden border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800">
+                  <img src={pyDsaImage} alt="DSA Visualizer & Python Playground" className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
 
                 {/* Content */}
@@ -243,10 +247,10 @@ function App() {
                     A full-stack educational platform featuring structured algorithm roadmaps, an interactive DSA Visualizer for dynamic animations, and an integrated Python Playground for live in-browser coding.
                   </p>
                   <div className="flex items-center gap-6 mt-auto">
-                    <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    <a href="https://github.com/srivigneshwaran/pythonAndDsa" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                       <FaGithub className="w-6 h-6" />
                     </a>
-                    <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    <a href="https://masterpythonanddsa.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                       <ExternalLink className="w-6 h-6" />
                     </a>
                   </div>
@@ -277,10 +281,10 @@ function App() {
                   </div>
                 </div>
 
-                {/* Image Placeholder - order-1 on mobile, order-2 on desktop */}
-                <div className="bg-slate-200 dark:bg-slate-800/50 min-h-[250px] md:min-h-full flex items-center justify-center p-8 relative overflow-hidden order-1 md:order-2 border-b md:border-b-0 md:border-l border-slate-200 dark:border-slate-800">
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 mix-blend-overlay"></div>
-                  <Database className="w-16 h-16 text-slate-400 dark:text-slate-600 opacity-50 group-hover:scale-110 transition-transform duration-500" />
+                {/* Image Container - order-1 on mobile, order-2 on desktop */}
+                <div className="bg-slate-200 dark:bg-slate-800/50 min-h-[250px] md:min-h-full flex items-center justify-center relative overflow-hidden order-1 md:order-2 border-b md:border-b-0 md:border-l border-slate-200 dark:border-slate-800">
+                  <img src={drImage} alt="Diabetic Retinopathy Detection" className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
               </motion.div>
 
@@ -294,7 +298,7 @@ function App() {
               >
                 {/* Image Container */}
                 <div className="bg-slate-200 dark:bg-slate-800/50 min-h-[250px] md:min-h-full flex items-center justify-center relative overflow-hidden border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800">
-                  <img src="/srimurugan.png" alt="Sri Murugan Tapes Corporate Website" className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
+                  <img src={smtImage} alt="Sri Murugan Tapes Corporate Website" className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-500"></div>
                 </div>
 
