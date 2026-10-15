@@ -7,14 +7,22 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        syne: ['Syne', 'sans-serif'],
+        space: ['"Space Grotesk"', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+      },
       colors: {
+        darkbg: '#08090d',
+        darkcard: '#101218',
+        darkborder: '#1f2430',
         charcoal: {
-          950: '#090d13',
-          900: '#0d1117',
-          850: '#111722',
-          800: '#161b22',
-          700: '#21262d',
-          600: '#30363d',
+          950: '#06070a',
+          900: '#0a0c12',
+          850: '#0f121b',
+          800: '#151923',
+          700: '#1d2331',
+          600: '#2b3345',
           500: '#484f58',
         }
       }

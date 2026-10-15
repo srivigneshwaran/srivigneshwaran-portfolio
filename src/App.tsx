@@ -1,205 +1,189 @@
 import { useState, useEffect } from 'react';
-import { Mail, ExternalLink, Code2, Database, Layout, Terminal, Server, Award, ChevronRight, ChevronLeft, Moon, Sun, Download, User, MessageSquare, Send, Pause, Play, Sparkles, Briefcase, GraduationCap } from 'lucide-react';
+import { 
+  Mail, Code2, Database, Layout, Terminal, Server, 
+  ChevronRight, Moon, Sun, Download, Send, 
+  Cpu, ArrowUpRight, CheckCircle2, Globe, Flame
+} from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
 import drImage from './assets/DR.png';
 import smtImage from './assets/SMT.png';
 import pyDsaImage from './assets/pyDSA.png';
+import devproofImage from './assets/devproof.png';
+import resumeParserImage from './assets/resumeParser.png';
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 40 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: false, amount: 0.15 },
-  transition: { duration: 0.65, ease: "easeOut" as const }
-};
+interface Project {
+  title: string;
+  category: 'web' | 'ai' | 'systems';
+  description: string;
+  image?: string;
+  tags: string[];
+  github: string;
+  live: string | null;
+  badge: string;
+  accent: string;
+  icon?: any;
+  highlight?: string;
+  metrics?: string;
+}
 
-const scrollScale = {
-  initial: { opacity: 0, scale: 0.9, y: 30 },
-  whileInView: { opacity: 1, scale: 1, y: 0 },
-  viewport: { once: false, amount: 0.15 },
-  transition: { duration: 0.7, ease: "easeOut" as const }
-};
-
-const scrollSlideLeft = {
-  initial: { opacity: 0, x: -50 },
-  whileInView: { opacity: 1, x: 0 },
-  viewport: { once: false, amount: 0.15 },
-  transition: { duration: 0.65, ease: "easeOut" as const }
-};
-
-const scrollSlideRight = {
-  initial: { opacity: 0, x: 50 },
-  whileInView: { opacity: 1, x: 0 },
-  viewport: { once: false, amount: 0.15 },
-  transition: { duration: 0.65, ease: "easeOut" as const }
-};
-
-const projectsData = [
+const allProjects: Project[] = [
   {
     title: "DSA Visualizer & Python Playground",
-    description: "A full-stack educational platform featuring structured algorithm roadmaps, an interactive DSA Visualizer for dynamic animations, and an integrated Python Playground for live in-browser coding.",
+    category: "web",
+    description: "A full-stack interactive educational environment featuring structured algorithm roadmaps, real-time dynamic visualizer, and an integrated in-browser Python playground compiler.",
     image: pyDsaImage,
-    tags: ["React", "TypeScript", "Algorithms", "Python Playground"],
+    tags: ["React", "TypeScript", "Algorithms", "Python Playground", "Vite"],
     github: "https://github.com/srivigneshwaran/pythonAndDsa",
     live: "https://masterpythonanddsa.vercel.app/",
     badge: "Interactive Educational Platform",
-    accent: "indigo"
+    accent: "from-cyan-500 to-blue-600",
+    highlight: "Live Dynamic Animations & Web Playground",
+    metrics: "20+ Visualized Algorithms"
   },
   {
-    title: "Diabetic Retinopathy Detection",
-    description: "A machine learning-powered web application that automates the screening of diabetic retinopathy from eye fundus images, providing immediate, staged diagnostic predictions.",
-    image: drImage,
-    tags: ["Deep Learning", "ResNet", "Computer Vision", "Python"],
-    github: "https://github.com/srivigneshwaran/Diabetic_Retinopathy_using_RESNET",
-    live: null,
-    badge: "Medical AI Diagnostics",
-    accent: "blue"
-  },
-  {
-    title: "Sri Murugan Tapes Corporate Website",
-    description: "A responsive, component-based corporate website for a manufacturing business built with React, Vite, and Tailwind CSS. Features a premium design system with CSS micro-animations and smooth scrolling.",
-    image: smtImage,
-    tags: ["React", "Vite", "Tailwind CSS", "Design System"],
-    github: "https://github.com/srivigneshwaran/sriMuruganTapes-portfolio",
-    live: "https://srimurugantapes.vercel.app/",
-    badge: "Enterprise Web App",
-    accent: "indigo"
-  },
-  {
-    title: "DevProof AI",
-    description: "An AI-powered developer workflow assistant that guides engineers from bug report → root cause analysis → proposed patch → human approval → automated test verification and final proof.",
-    tags: ["Python", "FastAPI", "AI Workflow", "Next.js"],
+    title: "DevProof AI — Autonomous Verification Agent",
+    category: "ai",
+    description: "Developer workflow assistant orchestrating bug triage: ingests error traces, executes root-cause isolation, formulates a deterministic patch, and generates verification proofs before pull requests.",
+    image: devproofImage,
+    tags: ["Python", "FastAPI", "AI Workflow", "Next.js", "LLM Pipelines"],
     github: "https://github.com/srivigneshwaran/devproof-ai",
     live: "https://devproof-ai-kappa.vercel.app",
     badge: "AI Developer Tooling",
-    accent: "purple",
+    accent: "from-purple-500 to-pink-600",
     icon: Terminal,
-    bannerTitle: "Automated Bug Verification",
-    bannerSubtitle: "Root Cause • Automated Fix • Verification Proof"
+    highlight: "Automated Root Cause to Patch Verification",
+    metrics: "Instant LLM Debug Loop"
   },
   {
-    title: "NLP-Powered Resume Parser",
-    description: "An intelligent web application that parses unstructured resumes in PDF/document formats, extracting key skills, education, and work history into structured candidate profiles.",
-    tags: ["TypeScript", "NLP", "React", "Tailwind CSS"],
+    title: "NLP Resume Intelligence & Parser",
+    category: "ai",
+    description: "Intelligent document parsing application extracting multi-format candidate resumes into clean structured JSON schemas, analyzing entity tokens, competencies, and tenure timelines.",
+    image: resumeParserImage,
+    tags: ["TypeScript", "NLP", "React", "Entity Extraction", "Tailwind CSS"],
     github: "https://github.com/srivigneshwaran/resume_parser",
     live: "https://resume-parser-seven-khaki.vercel.app",
     badge: "NLP & Entity Extraction",
-    accent: "teal",
+    accent: "from-teal-500 to-cyan-600",
     icon: Layout,
-    bannerTitle: "NLP Resume Intelligence",
-    bannerSubtitle: "PDF Parsing • Entity Extraction • JSON Schema"
+    highlight: "Structured Extraction from PDF/DOCX",
+    metrics: "Automated Candidate Schema"
   },
   {
-    title: "Full-Stack Online Shopping System",
-    description: "A comprehensive e-commerce platform built with React, Vite, and Tailwind on the frontend and Django REST Framework with PostgreSQL on the backend, featuring cart management, order checkout, and product cataloging.",
-    tags: ["React", "Django REST", "PostgreSQL", "Tailwind CSS"],
-    github: "https://github.com/srivigneshwaran/Online_Shopping_System",
+    title: "Sri Murugan Tapes Corporate Web Application",
+    category: "web",
+    description: "Modern production-grade corporate website engineered for an industrial manufacturing business. Employs micro-animations, fast component hydration, and mobile-first responsive architecture.",
+    image: smtImage,
+    tags: ["React", "Vite", "Tailwind CSS", "Design System", "Framer Motion"],
+    github: "https://github.com/srivigneshwaran/sriMuruganTapes-portfolio",
+    live: "https://srimurugantapes.vercel.app/",
+    badge: "Enterprise Web App",
+    accent: "from-blue-500 to-indigo-600",
+    highlight: "Custom Component Design System",
+    metrics: "99+ Mobile Lighthouse Score"
+  },
+  {
+    title: "Diabetic Retinopathy Detection",
+    category: "ai",
+    description: "Deep learning automated diagnostic screening system evaluating retinal fundus imagery. Uses a customized deep ResNet architecture to classify severity levels into five clinical stages.",
+    image: drImage,
+    tags: ["Deep Learning", "ResNet", "Computer Vision", "PyTorch", "Python"],
+    github: "https://github.com/srivigneshwaran/Diabetic_Retinopathy_using_RESNET",
     live: null,
-    badge: "Full-Stack E-Commerce",
-    accent: "blue",
-    icon: Database,
-    bannerTitle: "E-Commerce Architecture",
-    bannerSubtitle: "Cart & Checkout • Product Catalog • PostgreSQL"
+    badge: "Medical AI Diagnostics",
+    accent: "from-emerald-500 to-teal-600",
+    highlight: "Multi-stage Clinical Image Classification",
+    metrics: "High Precision Fundus Analysis"
   },
   {
-    title: "Distributed Task Manager API",
-    description: "A robust Django REST Framework backend for asynchronous task management. Implements Celery workers backed by Redis for background notification queues and comes fully containerized via Docker.",
-    tags: ["Django REST", "Celery", "Redis", "Docker"],
-    github: "https://github.com/srivigneshwaran/TaskMangerPY",
-    live: null,
-    badge: "Distributed Systems & Queues",
-    accent: "amber",
-    icon: Server,
-    bannerTitle: "Distributed Task Queues",
-    bannerSubtitle: "Celery Workers • Redis Broker • Dockerized"
-  },
-  {
-    title: "Healthcare Provider Fraud Detection",
-    description: "An end-to-end machine learning pipeline identifying anomalous and fraudulent billing patterns. Combines unsupervised Isolation Forest and supervised XGBoost ensembles with SHAP explainability for regulatory audits.",
-    tags: ["Python", "XGBoost", "Isolation Forest", "SHAP"],
+    title: "Healthcare Provider Fraud Detection Pipeline",
+    category: "ai",
+    description: "End-to-end unsupervised and supervised ML pipeline detecting fraudulent billing patterns in healthcare insurance claims using Isolation Forest and XGBoost with SHAP explainability.",
+    tags: ["Python", "XGBoost", "Isolation Forest", "SHAP", "Scikit-Learn"],
     github: "https://github.com/srivigneshwaran/healthCare_fraud_detection",
     live: null,
     badge: "Healthcare ML Pipeline",
-    accent: "rose",
+    accent: "from-rose-500 to-orange-600",
     icon: Database,
-    bannerTitle: "ML Anomaly Detection",
-    bannerSubtitle: "Ensemble Modeling • SHAP Auditing • Fraud Analytics"
+    highlight: "Audit-Ready SHAP Feature Attribution",
+    metrics: "High Recall Anomaly Identification"
   },
   {
-    title: "Neural Style Transfer Web App",
-    description: "An interactive Streamlit application utilizing a deep VGG-19 convolutional network to blend artistic style representations with source imagery, optimized with CUDA acceleration and custom style weights.",
-    tags: ["PyTorch", "Streamlit", "VGG-19", "CUDA"],
+    title: "Distributed Task Manager API & Worker Broker",
+    category: "systems",
+    description: "High-throughput asynchronous task orchestrator powered by Django REST Framework, Celery background workers, Redis cache queues, and containerized Docker deployments.",
+    tags: ["Django REST", "Celery", "Redis", "Docker", "PostgreSQL"],
+    github: "https://github.com/srivigneshwaran/TaskMangerPY",
+    live: null,
+    badge: "Distributed Systems & Queues",
+    accent: "from-amber-500 to-yellow-600",
+    icon: Server,
+    highlight: "Non-blocking Asynchronous Queue Processing",
+    metrics: "Celery + Redis Dockerized"
+  },
+  {
+    title: "Full-Stack Online Shopping System",
+    category: "web",
+    description: "Multi-vendor e-commerce application integrating React frontend with robust Django REST Framework endpoints, dynamic shopping carts, order status lifecycle, and relational database modeling.",
+    tags: ["React", "Django REST", "PostgreSQL", "Tailwind CSS", "JWT Auth"],
+    github: "https://github.com/srivigneshwaran/Online_Shopping_System",
+    live: null,
+    badge: "Full-Stack E-Commerce",
+    accent: "from-blue-600 to-cyan-500",
+    icon: Database,
+    highlight: "Relational Modeling with Django & PostgreSQL",
+    metrics: "Secure RESTful Architecture"
+  },
+  {
+    title: "Neural Style Transfer Web Application",
+    category: "ai",
+    description: "Interactive neural art synthesiser utilizing a pre-trained VGG-19 convolutional network to separate and recombine content and style representations in real time with CUDA GPU acceleration.",
+    tags: ["PyTorch", "Streamlit", "VGG-19", "CUDA", "Computer Vision"],
     github: "https://github.com/srivigneshwaran/Nueral_style_transfer",
     live: null,
     badge: "Computer Vision & Deep Learning",
-    accent: "purple",
+    accent: "from-violet-500 to-purple-600",
     icon: Code2,
-    bannerTitle: "Deep Learning & Vision",
-    bannerSubtitle: "VGG-19 CNN • CUDA GPU • Feature Blending"
+    highlight: "Deep VGG-19 Gram Matrix Feature Blending",
+    metrics: "Real-time CUDA Acceleration"
   }
 ];
 
-function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [currentProject, setCurrentProject] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+export default function App() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [activeTab, setActiveTab] = useState<'all' | 'web' | 'ai' | 'systems'>('all');
+  const [activeSection, setActiveSection] = useState('home');
 
-  const nextProject = () => {
-    setDirection(1);
-    setCurrentProject((prev) => (prev + 1) % projectsData.length);
-  };
-
-  const prevProject = () => {
-    setDirection(-1);
-    setCurrentProject((prev) => (prev - 1 + projectsData.length) % projectsData.length);
-  };
-
-  const goToProject = (index: number) => {
-    setDirection(index > currentProject ? 1 : -1);
-    setCurrentProject(index);
-  };
-
-  const [isHovered, setIsHovered] = useState(false);
-
+  // Dark mode init
   useEffect(() => {
-    if (!isAutoPlaying || isHovered) return;
-    const interval = setInterval(() => {
-      setDirection(1);
-      setCurrentProject((prev) => (prev + 1) % projectsData.length);
-    }, 3500); // 3.5s auto-slide delay
-    return () => clearInterval(interval);
-  }, [isAutoPlaying, isHovered, currentProject]);
-
-  useEffect(() => {
-    // Check system preference on load
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setIsDarkMode(true);
-    }
+    document.documentElement.classList.add('dark');
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return next;
+    });
+  };
 
-  const [activeSection, setActiveSection] = useState('about');
-
+  // Scroll spy
   useEffect(() => {
+    const sections = ['home', 'about', 'experience', 'projects', 'skills', 'education', 'contact'];
     const handleScroll = () => {
-      const sections = ['about', 'experience', 'projects', 'skills', 'education', 'contact'];
-      const scrollY = window.pageYOffset;
-      for (const sectionId of sections) {
-        const el = document.getElementById(sectionId);
+      const scrollPos = window.scrollY + 200;
+      for (const id of sections) {
+        const el = document.getElementById(id);
         if (el) {
-          const top = el.offsetTop - 120;
+          const top = el.offsetTop;
           const height = el.offsetHeight;
-          if (scrollY >= top && scrollY < top + height) {
-            setActiveSection(sectionId);
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveSection(id);
             break;
           }
         }
@@ -209,815 +193,869 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, id: string) => {
-    e.preventDefault();
-    setActiveSection(id);
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 72; // Navbar height + margin
-      const elementPosition = element.getBoundingClientRect().top;
-      const startPosition = window.pageYOffset;
-      const targetPosition = elementPosition + startPosition - offset;
-      const distance = targetPosition - startPosition;
-      const duration = Math.min(850, Math.max(450, Math.abs(distance) * 0.45));
-      let start: number | null = null;
-
-      // Smooth custom ease-in-out cubic-bezier
-      const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-      const animation = (currentTime: number) => {
-        if (start === null) start = currentTime;
-        const timeElapsed = currentTime - start;
-        const progress = Math.min(timeElapsed / duration, 1);
-        const easeProgress = easeInOutCubic(progress);
-
-        window.scrollTo(0, startPosition + distance * easeProgress);
-
-        if (timeElapsed < duration) {
-          requestAnimationFrame(animation);
-        } else {
-          window.scrollTo(0, targetPosition);
-        }
-      };
-
-      requestAnimationFrame(animation);
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+    stiffness: 120,
+    damping: 28,
     restDelta: 0.001
   });
 
+  const filteredProjects = activeTab === 'all' 
+    ? allProjects 
+    : allProjects.filter(p => p.category === activeTab);
+
   return (
-    <div className="min-h-screen bg-[#f6f8fa] dark:bg-[#0d1117] text-[#1f2328] dark:text-[#e6edf3] font-sans selection:bg-cyan-500 selection:text-black transition-colors duration-300">
-      {/* Scroll-Triggered Reading Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 origin-left z-[100]"
+    <div className={`min-h-screen ${isDarkMode ? 'dark bg-[#08090d] text-[#e2e8f0]' : 'bg-[#f8fafc] text-[#0f172a]'} font-sans selection:bg-cyan-400 selection:text-black transition-colors duration-300 relative`}>
+      
+      {/* Top Scroll Progress Indicator */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 via-indigo-500 to-pink-500 z-50 origin-left"
         style={{ scaleX }}
       />
 
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/85 dark:bg-[#0d1117]/85 backdrop-blur-md z-50 border-b border-slate-200 dark:border-[#30363d]/70 transition-colors duration-300">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            Srivigneshwaran I
-          </span>
+      {/* Floating Modern Header */}
+      <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-xl bg-[#08090d]/80 dark:bg-[#08090d]/85 border-b border-white/5 transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          
+          {/* Logo / Monogram */}
+          <button 
+            onClick={() => scrollTo('home')}
+            className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-syne font-black text-black text-lg shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              S
+            </div>
+            <div>
+              <span className="font-syne font-bold text-lg tracking-tight text-white group-hover:text-cyan-400 transition-colors block leading-tight">
+                SRIVIGNESHWARAN
+              </span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400">
+                Software & AI Developer
+              </span>
+            </div>
+          </button>
 
-          <div className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-slate-100/70 dark:bg-[#161b22]/70 border border-slate-200 dark:border-[#30363d]/80 backdrop-blur-sm">
+          {/* Navigation Pill */}
+          <nav className="hidden md:flex items-center gap-1 p-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
             {[
+              { id: 'home', label: 'Index' },
               { id: 'about', label: 'About' },
               { id: 'experience', label: 'Experience' },
               { id: 'projects', label: 'Projects' },
-              { id: 'skills', label: 'Skills' },
-              { id: 'education', label: 'Education' }
-            ].map((tab) => {
-              const isActive = activeSection === tab.id;
+              { id: 'skills', label: 'Stack' },
+              { id: 'education', label: 'Education' },
+              { id: 'contact', label: 'Contact' },
+            ].map(item => {
+              const isActive = activeSection === item.id;
               return (
-                <a
-                  key={tab.id}
-                  href={`#${tab.id}`}
-                  onClick={(e) => scrollToSection(e, tab.id)}
-                  className={`relative px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 ${
-                    isActive
-                      ? 'text-cyan-700 dark:text-cyan-300'
-                      : 'text-slate-600 dark:text-[#8d96a0] hover:text-slate-900 dark:hover:text-[#e6edf3]'
+                <button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  className={`relative px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all ${
+                    isActive 
+                      ? 'text-white' 
+                      : 'text-slate-400 hover:text-white'
                   }`}
                 >
                   {isActive && (
-                    <motion.span
-                      layoutId="activeNavTab"
-                      className="absolute inset-0 rounded-full bg-white dark:bg-[#21262d] shadow-sm border border-slate-200 dark:border-cyan-500/30"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    <motion.div
+                      layoutId="activeTabBadge"
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/40"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
-                  <span className="relative z-10">{tab.label}</span>
-                </a>
+                  <span className="relative z-10">{item.label}</span>
+                </button>
               );
             })}
-          </div>
+          </nav>
 
-          <div className="flex gap-4 items-center">
-            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-[#21262d] text-slate-500 dark:text-[#8d96a0] hover:text-slate-900 dark:hover:text-white transition-colors focus:outline-none">
-              {isDarkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+          {/* Right Action Group */}
+          <div className="flex items-center gap-3">
+            <a 
+              href="https://drive.google.com/file/d/1YpLOe402JcyR5mwES-Jie9k8DxgW_Kk4/view?usp=sharing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-white border border-white/10 transition-all hover:border-cyan-400/50"
+            >
+              <Download className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Resume</span>
+            </a>
+
+            <button
+              onClick={() => scrollTo('contact')}
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-400 hover:bg-cyan-300 text-black shadow-lg shadow-cyan-400/20 transition-all transform hover:scale-105 cursor-pointer"
+            >
+              Let's Talk
             </button>
-            <a href="https://github.com/srivigneshwaran" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors hidden sm:block">
-              <FaGithub className="w-5 h-5" />
-            </a>
-            <a href="https://www.linkedin.com/in/srivigneshwaran-i-115163229" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors hidden sm:block">
-              <FaLinkedin className="w-5 h-5" />
-            </a>
-            <button onClick={(e) => scrollToSection(e, 'contact')} className="hidden sm:flex text-slate-500 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-              <Mail className="w-5 h-5" />
+
+            <button
+              onClick={toggleDarkMode}
+              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition-colors"
+              title="Toggle theme"
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-cyan-400" />}
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <main className="pt-24 pb-12 overflow-hidden">
-        {/* Hero Section */}
-        <section className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-28 md:pt-24 md:pb-36">
-          {/* Ambient Glowing Blobs & Tech Grid Background */}
-          <div className="absolute inset-0 -z-10 bg-grid-pattern opacity-60"></div>
-          <div className="absolute -top-20 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-cyan-500/15 dark:bg-cyan-500/20 rounded-full blur-3xl pointer-events-none animate-float-slow -z-10"></div>
-          <div className="absolute top-1/3 right-10 w-64 h-64 md:w-80 md:h-80 bg-purple-500/15 dark:bg-purple-600/20 rounded-full blur-3xl pointer-events-none animate-float-reverse -z-10"></div>
-          <div className="absolute bottom-0 left-1/3 w-60 h-60 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow -z-10"></div>
+      {/* Main Container */}
+      <main className="relative z-10 pt-20">
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center space-y-8 relative z-10"
-          >
-            {/* Live Status Pill */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/60 backdrop-blur-md shadow-sm"
+        {/* ======================================================== */}
+        {/* HERO SECTION: Editorial Brutalist & Giant Impact Typography */}
+        {/* ======================================================== */}
+        <section id="home" className="relative min-h-[92vh] flex flex-col justify-center px-4 sm:px-6 lg:px-8 border-b border-white/5 overflow-hidden">
+          {/* Ambient Lighting Background */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-40 pointer-events-none"></div>
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-r from-cyan-500/15 via-blue-600/15 to-purple-600/10 blur-[130px] rounded-full pointer-events-none"></div>
+
+          <div className="max-w-7xl mx-auto w-full py-16 sm:py-24 space-y-10">
+            
+            {/* Live Availability Badge & Location */}
+            {/* Live Availability Badge & Location */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-wrap items-center gap-3"
             >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Available for Opportunities</span>
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-medium shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>AVAILABLE FOR FULL-TIME ROLES</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-mono font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                <span>IMMEDIATE JOINER</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300 text-xs font-mono">
+                <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                <span>TIRUPUR • OPEN TO REMOTE / HYBRID</span>
+              </div>
             </motion.div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              Hi, I'm{' '}
-              <span className="relative inline-block">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
-                  Srivigneshwaran
-                </span>
-                <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full opacity-60"></span>
-              </span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-              Software Developer specializing in building <span className="font-semibold text-indigo-600 dark:text-indigo-400">robust, scalable web applications</span> and high-throughput backend services, powered by AI and data intelligence.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <button
-                onClick={(e) => scrollToSection(e, 'contact')}
-                className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white px-8 py-3.5 rounded-full font-medium transition-all transform hover:scale-105 shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 group cursor-pointer"
+            {/* Giant Typographic Statement */}
+            <div className="space-y-1 sm:space-y-2">
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7 }}
+                className="font-mono text-xs sm:text-sm tracking-widest text-cyan-400 uppercase flex items-center gap-3"
               >
-                <Mail className="w-4 h-4 group-hover:rotate-12 transition-transform" /> Get In Touch
-              </button>
-              <a
-                href="https://drive.google.com/file/d/1YpLOe402JcyR5mwES-Jie9k8DxgW_Kk4/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-white/80 dark:bg-slate-900/80 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-8 py-3.5 rounded-full font-medium transition-all transform hover:scale-105 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-2 backdrop-blur-sm"
+                <span>[01 / CREATIVE ENGINEER]</span>
+                <span className="h-px w-16 bg-cyan-400/40 inline-block"></span>
+              </motion.div>
+
+              {/* Name - Scaled comfortably so it never gets cut, while preserving Software Developer sizing */}
+              <motion.h1 
+                initial={{ opacity: 0, y: 35 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="font-syne font-black tracking-tight text-3xl sm:text-4xl md:text-5xl lg:text-[3.6rem] xl:text-[4.2rem] leading-[1.05] text-white"
               >
-                <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" /> Download Resume
-              </a>
+                SRIVIGNESHWARAN
+              </motion.h1>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 35 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="font-syne font-black tracking-tighter text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] text-stroke uppercase"
+              >
+                SOFTWARE DEVELOPER
+              </motion.div>
             </div>
-          </motion.div>
-        </section>
 
-        {/* About Section */}
-        <section id="about" className="bg-white dark:bg-[#161b22] py-24 border-y border-slate-200 dark:border-[#30363d]/80 scroll-mt-16 transition-colors duration-300">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              {...scrollSlideLeft}
-              className="flex items-center gap-4 mb-8"
+            {/* Impact Tagline & Metrics Banner */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="grid lg:grid-cols-12 gap-8 pt-4 items-end"
             >
-              <div className="p-2.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60">
-                <User className="w-7 h-7" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">About Me</h2>
-                <p className="text-sm text-slate-500 dark:text-[#8d96a0] mt-0.5">Background & Core Philosophy</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              {...fadeInUp}
-              className="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-[#c9d1d9] leading-relaxed space-y-6"
-            >
-              <p>
-                I am a highly motivated Software Developer with a strong foundation in Artificial Intelligence and Data Science. My passion lies in architecting robust backend systems, building intuitive frontend interfaces, and leveraging data-driven approaches to solve complex problems.
+              <p className="lg:col-span-7 text-lg sm:text-xl text-slate-300 font-normal leading-relaxed">
+                Specialized in architecting <span className="text-white font-semibold">high-concurrency web systems</span>, high-performance distributed backends, and applied <span className="text-cyan-400 font-semibold">Artificial Intelligence models</span> that reliably scale under production pressure.
               </p>
-              <p>
-                Throughout my academic and professional journey, I have cultivated a deep understanding of modern web development, cloud infrastructure, and machine learning. I thrive in dynamic environments where I can continuously learn and apply emerging technologies to create impactful solutions.
-              </p>
-            </motion.div>
 
-            {/* Scroll-Triggered Stat Callouts */}
-            <motion.div
-              {...scrollScale}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 pt-8 border-t border-slate-200 dark:border-[#30363d]"
-            >
-              {[
-                { number: "500K+", label: "Daily API Requests Supported" },
-                { number: "1M+", label: "Records Processed Asynchronously" },
-                { number: "99.9%", label: "Cloud Uptime Maintained" },
-                { number: "9+", label: "Shipped Projects & Models" }
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="p-5 rounded-2xl bg-slate-50 dark:bg-[#0d1117] border border-slate-200/80 dark:border-[#30363d] text-center hover:border-cyan-500/50 hover:-translate-y-1 transition-all duration-300 shadow-sm"
-                >
-                  <p className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400">
-                    {stat.number}
-                  </p>
-                  <p className="text-xs text-slate-600 dark:text-[#8d96a0] font-medium mt-1">
-                    {stat.label}
-                  </p>
+              {/* Quick Key Numbers Bar */}
+              <div className="lg:col-span-5 grid grid-cols-3 gap-3">
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                  <div className="text-2xl sm:text-3xl font-syne font-black text-cyan-400">500K+</div>
+                  <div className="text-[11px] font-mono text-slate-400 mt-0.5 uppercase tracking-wide">Daily Req</div>
                 </div>
-              ))}
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                  <div className="text-2xl sm:text-3xl font-syne font-black text-blue-400">1M+</div>
+                  <div className="text-[11px] font-mono text-slate-400 mt-0.5 uppercase tracking-wide">Batch Records</div>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+                  <div className="text-2xl sm:text-3xl font-syne font-black text-emerald-400">99.9%</div>
+                  <div className="text-[11px] font-mono text-slate-400 mt-0.5 uppercase tracking-wide">Uptime</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Social Link Badges */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="flex flex-wrap items-center gap-4 pt-4"
+            >
+              <button 
+                onClick={() => scrollTo('projects')}
+                className="px-6 py-3.5 rounded-full bg-white text-black font-syne font-extrabold text-sm flex items-center gap-2 hover:bg-cyan-400 transition-all transform hover:scale-105 shadow-xl shadow-cyan-400/10 cursor-pointer"
+              >
+                <span>EXPLORE WORK</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+
+              <a 
+                href="https://github.com/srivigneshwaran" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-5 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-mono text-xs flex items-center gap-2.5 transition-all hover:border-cyan-400/40"
+              >
+                <FaGithub className="w-4 h-4 text-cyan-400" />
+                <span>GITHUB / SRIVIGNESHWARAN</span>
+              </a>
+
+              <a 
+                href="https://www.linkedin.com/in/srivigneshwaran-i-115163229" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="px-5 py-3.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-mono text-xs flex items-center gap-2.5 transition-all hover:border-blue-400/40"
+              >
+                <FaLinkedin className="w-4 h-4 text-blue-400" />
+                <span>LINKEDIN</span>
+              </a>
             </motion.div>
           </div>
         </section>
 
-        {/* Experience Section */}
-        <section id="experience" className="py-24 scroll-mt-16 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              {...fadeInUp}
-              className="space-y-12"
+        {/* ======================================================== */}
+        {/* ABOUT SECTION: Dedicated Story & Core Philosophy */}
+        {/* ======================================================== */}
+        <section id="about" className="py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-b border-white/5 relative bg-[#08090d]/60">
+          <div className="max-w-7xl mx-auto">
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.6 }}
+              className="flex flex-wrap items-center gap-3 font-mono text-xs text-cyan-400 uppercase tracking-widest mb-8"
             >
-              <div className="flex items-center gap-4 mb-12">
-                <div className="p-2.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60 shadow-sm">
-                  <Briefcase className="w-7 h-7" />
+              <span>[02 / STORY]</span>
+              <span className="h-px w-12 bg-cyan-400/40"></span>
+              <span className="text-slate-300 font-medium">BIOGRAPHY &amp; BACKGROUND</span>
+            </motion.div>
+
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              
+              {/* Left Column: Heading */}
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7 }}
+                className="lg:col-span-5 space-y-6"
+              >
+                <h2 className="font-syne font-black text-2xl sm:text-3xl lg:text-[2.35rem] text-white tracking-tight leading-[1.2]">
+                  ENGINEERING AT THE INTERSECTION OF <span className="text-cyan-400">SCALE</span> AND <span className="text-blue-400">INTELLIGENCE</span>.
+                </h2>
+                
+                <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/10 space-y-3 shadow-lg">
+                  <div className="flex items-center gap-3 text-cyan-400 font-mono text-xs font-semibold uppercase">
+                    <Flame className="w-4 h-4 text-cyan-400" />
+                    <span>Current Focus</span>
+                  </div>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Building fault-tolerant microservices, resilient event pipelines (Redis/Celery), and enterprise APIs supporting 500K+ requests every single day.
+                  </p>
                 </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Experience</h2>
-                  <p className="text-sm text-slate-500 dark:text-[#8d96a0] mt-1">Professional Journey & Impact</p>
-                </div>
-              </div>
+              </motion.div>
 
-              <motion.div {...scrollSlideRight} className="relative">
-                <div className="bg-white/90 dark:bg-[#161b22] backdrop-blur-md rounded-3xl p-8 md:p-10 border border-slate-200 dark:border-[#30363d] shadow-xl dark:shadow-black/40 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-2xl">
-                  <div className="md:grid md:grid-cols-4 md:gap-8">
-                    <div className="md:text-right pb-4 md:pb-0 md:pr-4 md:border-r border-slate-200 dark:border-[#30363d]">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-bold mb-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Current Role
-                      </div>
-                      <p className="text-cyan-600 dark:text-cyan-400 font-bold text-base">Jul 2025 – Present</p>
-                      <p className="text-slate-500 dark:text-[#8d96a0] text-sm mt-1">Coimbatore, India</p>
-                    </div>
+              {/* Right Column: Detailed Bio & Highlights */}
+              <motion.div 
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="lg:col-span-7 space-y-6 text-slate-300 text-base sm:text-lg leading-relaxed"
+              >
+                <p>
+                  I'm a Software Developer with a background in <strong className="text-white font-semibold">Artificial Intelligence & Data Science</strong>. My career spans architecting cloud backends on AWS, building high-throughput data processing workflows, and crafting interactive frontends that delight users.
+                </p>
+                <p>
+                  At <strong className="text-white font-semibold">Tenext Technologies</strong>, I serve as a primary backend engineer for Friendbuy USA, a premier referral & loyalty SaaS platform. Here, I've had the thrill of tuning API response times by 30%, processing millions of customer rewards asynchronously, and maintaining 99.9% uptime on containerized AWS ECS clusters.
+                </p>
+                <p>
+                  When I'm not tuning query latency or configuring Celery workers, I explore machine learning architectures, develop interactive educational web tools like DSA Visualizers, and experiment with next-gen autonomous agent workflows.
+                </p>
 
-                    <div className="md:col-span-3 md:pl-4 space-y-4">
-                      <div>
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Software Developer</h3>
-                          <span className="px-3 py-1 rounded-lg bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 text-xs font-semibold border border-cyan-200 dark:border-cyan-800/60">
-                            Full-Time
-                          </span>
-                        </div>
-                        <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Tenext Technologies</h4>
-                        <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 tracking-wide mt-1 uppercase">CLIENT: FRIENDBUY, USA — REFERRAL & LOYALTY SaaS PLATFORM</p>
-                      </div>
-
-                      <ul className="space-y-3.5 text-slate-600 dark:text-[#c9d1d9] text-sm md:text-base leading-relaxed">
-                        <li className="flex items-start gap-3 group">
-                          <div className="p-1 rounded-full bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 mt-1 shrink-0 group-hover:scale-125 transition-transform">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                          <span>Architected and optimized scalable backend services using <strong className="text-slate-900 dark:text-white font-semibold">Node.js</strong> and <strong className="text-slate-900 dark:text-white font-semibold">Express.js</strong> for a US-based SaaS referral and loyalty platform, improving API response times by 30% and supporting 500K+ daily requests.</span>
-                        </li>
-                        <li className="flex items-start gap-3 group">
-                          <div className="p-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mt-1 shrink-0 group-hover:scale-125 transition-transform">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                          <span>Engineered a high-volume CSV bulk rewards processing pipeline handling 1M+ records with robust validation, asynchronous processing, and DynamoDB updates, reducing processing time by 40%.</span>
-                        </li>
-                        <li className="flex items-start gap-3 group">
-                          <div className="p-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mt-1 shrink-0 group-hover:scale-125 transition-transform">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                          <span>Enforced role-based access control (RBAC) across 3 distinct user roles and architected auto-scaling workloads on AWS ECS, achieving 99.9% uptime and handling traffic surges up to 3x without performance degradation.</span>
-                        </li>
-                        <li className="flex items-start gap-3 group">
-                          <div className="p-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mt-1 shrink-0 group-hover:scale-125 transition-transform">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                          <span>Spearheaded integration of AWS DynamoDB, S3, and CloudWatch alongside Elasticsearch and Kibana for high-throughput data persistence, real-time monitoring, and full-stack observability, reducing incident resolution time by 35%.</span>
-                        </li>
-                        <li className="flex items-start gap-3 group">
-                          <div className="p-1 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mt-1 shrink-0 group-hover:scale-125 transition-transform">
-                            <ChevronRight className="w-4 h-4" />
-                          </div>
-                          <span>Engineered a dynamic announcement and notification system with scheduling, lifecycle controls, and event-driven analytics tracking impressions, clicks, and CTR across 10K+ active merchant campaigns, driving a 25% increase in user engagement and improving conversion rates by 20%.</span>
-                        </li>
-                      </ul>
-                    </div>
+                {/* Mini Metric Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-white/10">
+                  <div>
+                    <span className="block font-mono text-xs text-slate-400 uppercase">Degree</span>
+                    <span className="font-syne font-bold text-white text-base">B.Tech in AI & DS</span>
+                  </div>
+                  <div>
+                    <span className="block font-mono text-xs text-slate-400 uppercase">Production Work</span>
+                    <span className="font-syne font-bold text-cyan-400 text-base">500K+ Req / Day</span>
+                  </div>
+                  <div>
+                    <span className="block font-mono text-xs text-slate-400 uppercase">Location</span>
+                    <span className="font-syne font-bold text-white text-base">India • Open Remote</span>
                   </div>
                 </div>
               </motion.div>
-            </motion.div>
+
+            </div>
           </div>
         </section>
 
-        {/* Projects Section - Interactive 3D Card Rotation Carousel */}
-        <section id="projects" className="bg-white dark:bg-[#161b22] py-24 border-y border-slate-200 dark:border-[#30363d]/80 scroll-mt-16 transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header with Navigation Controls */}
-            <motion.div {...fadeInUp} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
-              <div className="flex items-center gap-4">
-                <div className="p-2.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60 shadow-sm">
-                  <Code2 className="w-7 h-7" />
+        {/* ======================================================== */}
+        {/* EXPERIENCE SECTION: Career Journey & Concrete Production Impact */}
+        {/* ======================================================== */}
+        <section id="experience" className="py-28 px-4 sm:px-6 lg:px-8 border-b border-white/5 relative bg-white/[0.01]">
+          <div className="max-w-7xl mx-auto space-y-12">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-3 font-mono text-xs text-cyan-400 uppercase tracking-widest mb-3">
+                  <span>[03 / CAREER]</span>
+                  <span className="h-px w-12 bg-cyan-400/30"></span>
+                  <span>PRODUCTION TRACK RECORD</span>
                 </div>
+                <h2 className="font-syne font-black text-4xl sm:text-5xl text-white tracking-tight">
+                  WORK EXPERIENCE
+                </h2>
+              </div>
+              <span className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                Jul 2025 — Present
+              </span>
+            </div>
+
+            {/* Experience Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7 }}
+              className="rounded-3xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/10 p-8 sm:p-12 space-y-8 relative overflow-hidden group hover:border-cyan-400/40 transition-all"
+            >
+              <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/20 transition-all"></div>
+
+              {/* Title & Organization Header */}
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/10 pb-6">
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Featured Projects</h2>
-                  <p className="text-sm text-slate-500 dark:text-[#8d96a0] mt-1">
-                    Rotating Showcase • Project {currentProject + 1} of {projectsData.length}
-                  </p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono mb-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                    <span>FULL-TIME • CURRENT ROLE</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-syne font-black text-white">
+                    Software Developer
+                  </h3>
+                  <div className="text-base text-slate-300 font-medium mt-1">
+                    Tenext Technologies <span className="text-cyan-400">•</span> Coimbatore, India
+                  </div>
+                </div>
+
+                <div className="lg:text-right">
+                  <span className="inline-block px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300 uppercase">
+                    Client: Friendbuy (USA) — Referral & Loyalty SaaS
+                  </span>
                 </div>
               </div>
 
-              {/* Navigation Controls */}
-              <div className="flex items-center gap-2 self-end sm:self-auto">
-                {/* Auto-play toggle */}
-                <button
-                  onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                  className={`p-2.5 rounded-xl border text-sm flex items-center gap-2 transition-all ${
-                    isAutoPlaying
-                      ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800/60'
-                      : 'bg-slate-100 dark:bg-[#21262d] text-slate-500 dark:text-[#8d96a0] border-slate-200 dark:border-[#30363d]'
-                  }`}
-                  title={isAutoPlaying ? "Pause Auto-Rotation" : "Start Auto-Rotation"}
-                >
-                  {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                  <span className="text-xs font-medium hidden md:inline">{isAutoPlaying ? "Auto" : "Paused"}</span>
-                </button>
+              {/* Impact Bullet Points */}
+              <div className="grid md:grid-cols-2 gap-6 text-sm text-slate-300 leading-relaxed">
+                
+                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                  <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold uppercase">
+                    <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                    <span>Performance & Throughput</span>
+                  </div>
+                  <p>
+                    Architected and optimized backend microservices using <strong className="text-white">Node.js</strong> and <strong className="text-white">Express.js</strong>, boosting overall API response latency by <strong className="text-cyan-400">30%</strong> while reliably serving <strong>500K+ daily requests</strong>.
+                  </p>
+                </div>
 
-                {/* Prev Button */}
-                <button
-                  onClick={prevProject}
-                  aria-label="Previous Project"
-                  className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#21262d] hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-700 dark:text-[#c9d1d9] border border-slate-200 dark:border-[#30363d] transition-all hover:scale-105"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
+                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                  <div className="flex items-center gap-2 text-blue-400 font-mono text-xs font-bold uppercase">
+                    <CheckCircle2 className="w-4 h-4 text-blue-400" />
+                    <span>Asynchronous Bulk Processing</span>
+                  </div>
+                  <p>
+                    Engineered an asynchronous CSV reward ingestion pipeline capable of parsing and updating <strong className="text-white">1M+ records</strong> directly in <strong className="text-white">AWS DynamoDB</strong>, dropping batch processing runtime by <strong className="text-blue-400">40%</strong>.
+                  </p>
+                </div>
 
-                {/* Next Button */}
-                <button
-                  onClick={nextProject}
-                  aria-label="Next Project"
-                  className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#21262d] hover:bg-cyan-50 dark:hover:bg-cyan-950/40 hover:text-cyan-600 dark:hover:text-cyan-400 text-slate-700 dark:text-[#c9d1d9] border border-slate-200 dark:border-[#30363d] transition-all hover:scale-105"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
+                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                  <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
+                    <CheckCircle2 className="w-4 h-4 text-purple-400" />
+                    <span>Cloud Architecture & Uptime</span>
+                  </div>
+                  <p>
+                    Implemented Role-Based Access Control (RBAC) across 3 distinct tiers, deploying autoscale workloads on <strong className="text-white">AWS ECS</strong> to preserve a strict <strong className="text-purple-400">99.9% uptime</strong> through 3x traffic surges.
+                  </p>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-black/40 border border-white/5 space-y-2 hover:border-cyan-500/30 transition-all">
+                  <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs font-bold uppercase">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <span>Observability & Engagement</span>
+                  </div>
+                  <p>
+                    Integrated Elasticsearch, Kibana, S3, and CloudWatch to slash incident diagnosis time by <strong className="text-emerald-400">35%</strong>. Shipped campaign lifecycle notifications driving a <strong className="text-white">25% increase</strong> in merchant engagement.
+                  </p>
+                </div>
+
               </div>
             </motion.div>
 
-            {/* 3D Rotating Card Display Container */}
-            <div
-              className="relative [perspective:1200px] overflow-hidden min-h-[520px] md:min-h-[460px] flex items-center justify-center py-4"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* PROJECTS SECTION: Categorized Multi-Section Showcase */}
+        {/* ======================================================== */}
+        <section id="projects" className="py-28 px-4 sm:px-6 lg:px-8 border-b border-white/5 relative">
+          <div className="max-w-7xl mx-auto space-y-12">
+            
+            {/* Header + Tabs */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-3 font-mono text-xs text-cyan-400 uppercase tracking-widest mb-3">
+                  <span>[04 / PORTFOLIO]</span>
+                  <span className="h-px w-12 bg-cyan-400/30"></span>
+                  <span>CURATED INVENTIONS</span>
+                </div>
+                <h2 className="font-syne font-black text-4xl sm:text-5xl text-white tracking-tight">
+                  FEATURED WORK
+                </h2>
+              </div>
+
+              {/* Filter Tabs: All, Web, AI, Systems */}
+              <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                {[
+                  { id: 'all', label: 'All Projects', count: allProjects.length },
+                  { id: 'web', label: 'Full-Stack & Web', count: allProjects.filter(p => p.category === 'web').length },
+                  { id: 'ai', label: 'AI & Machine Learning', count: allProjects.filter(p => p.category === 'ai').length },
+                  { id: 'systems', label: 'Systems & Backend', count: allProjects.filter(p => p.category === 'systems').length },
+                ].map(tab => {
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as any)}
+                      className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold transition-all flex items-center gap-2 cursor-pointer ${
+                        isActive
+                          ? 'bg-cyan-400 text-black shadow-lg shadow-cyan-400/20'
+                          : 'text-slate-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span className={`px-1.5 py-0.5 rounded-md text-[10px] ${isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-slate-400'}`}>
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Projects Grid - Reduced card size by 10% for crisp density */}
+            <motion.div 
+              layout 
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={currentProject}
-                  custom={direction}
-                  initial={{
-                    opacity: 0,
-                    rotateY: direction > 0 ? 45 : -45,
-                    scale: 0.9,
-                    x: direction > 0 ? 120 : -120
-                  }}
-                  animate={{
-                    opacity: 1,
-                    rotateY: 0,
-                    scale: 1,
-                    x: 0,
-                    transition: {
-                      duration: 0.55,
-                      ease: [0.22, 1, 0.36, 1]
-                    }
-                  }}
-                  exit={{
-                    opacity: 0,
-                    rotateY: direction > 0 ? -45 : 45,
-                    scale: 0.9,
-                    x: direction > 0 ? -120 : 120,
-                    transition: {
-                      duration: 0.45,
-                      ease: [0.22, 1, 0.36, 1]
-                    }
-                  }}
-                  className="w-full bg-slate-50 dark:bg-[#0d1117] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-[#30363d] grid md:grid-cols-2 group [transform-style:preserve-3d] hover:border-cyan-500/50 transition-colors"
-                >
-                  {/* Left: Visual Media or Dynamic Architectural Banner */}
-                  <div className="min-h-[260px] md:min-h-full flex items-center justify-center relative overflow-hidden border-b md:border-b-0 md:border-r border-slate-200 dark:border-[#30363d] bg-slate-900/5 dark:bg-[#161b22]/50">
-                    {projectsData[currentProject].image ? (
-                      <>
-                        <img
-                          src={projectsData[currentProject].image}
-                          alt={projectsData[currentProject].title}
-                          className="absolute inset-0 w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
-                      </>
-                    ) : (
-                      <div className="w-full h-full min-h-[260px] flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-gradient-to-br from-[#161b22] via-[#0d1117] to-[#090d13]">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.15),transparent_65%)]"></div>
-                        <div className="relative z-10 flex flex-col items-center space-y-4">
-                          <div className="w-20 h-20 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shadow-xl group-hover:scale-110 transition-transform duration-300">
-                            {(() => {
-                              const IconComponent = projectsData[currentProject].icon || Code2;
-                              return <IconComponent className="w-10 h-10" />;
-                            })()}
+              <AnimatePresence>
+                {filteredProjects.map((project, idx) => (
+                  <motion.div
+                    key={project.title}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.35, delay: idx * 0.05 }}
+                    className="flex flex-col justify-between rounded-2xl bg-[#101218] border border-white/10 overflow-hidden hover:border-cyan-400/50 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 group"
+                  >
+                    <div>
+                      {/* Media Banner - Scaled down 10% from h-52 to h-44 */}
+                      <div className="relative h-44 w-full overflow-hidden border-b border-white/10 bg-black/60">
+                        {project.image ? (
+                          <>
+                            <img 
+                              src={project.image} 
+                              alt={project.title} 
+                              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#101218] via-transparent to-transparent"></div>
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center p-5 text-center bg-gradient-to-br from-[#121520] to-[#090b10] relative">
+                            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 mb-2 group-hover:scale-110 transition-transform">
+                              {project.icon ? <project.icon className="w-6 h-6" /> : <Code2 className="w-6 h-6" />}
+                            </div>
+                            <span className="font-mono text-[11px] text-cyan-300 uppercase tracking-wider">
+                              {project.badge}
+                            </span>
                           </div>
-                          <span className="font-mono text-sm font-semibold tracking-wider text-cyan-300 uppercase">
-                            {projectsData[currentProject].bannerTitle || projectsData[currentProject].badge}
-                          </span>
-                          <span className="text-xs text-slate-400 max-w-xs">
-                            {projectsData[currentProject].bannerSubtitle || projectsData[currentProject].description.slice(0, 80) + '...'}
+                        )}
+
+                        {/* Top Category Tag */}
+                        <div className="absolute top-2.5 left-2.5">
+                          <span className="px-2.5 py-0.5 rounded-full text-[9px] font-mono uppercase tracking-wider bg-black/75 backdrop-blur-md text-white border border-white/10">
+                            {project.category}
                           </span>
                         </div>
-                      </div>
-                    )}
 
-                    {/* Badge Pill */}
-                    <div className="absolute top-4 left-4 z-20">
-                      <span className="px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md bg-white/90 dark:bg-[#161b22]/90 text-slate-800 dark:text-[#c9d1d9] border border-slate-200/60 dark:border-[#30363d] shadow-sm">
-                        {projectsData[currentProject].badge}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Right: Project Information & Actions */}
-                  <div className="p-8 md:p-12 flex flex-col justify-between">
-                    <div>
-                      {/* Tech Stack Pills */}
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {projectsData[currentProject].tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-xs font-semibold px-2.5 py-1 rounded-md bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/50"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mb-4 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                        {projectsData[currentProject].title}
-                      </h3>
-
-                      <p className="text-slate-600 dark:text-[#c9d1d9] text-base md:text-lg leading-relaxed mb-8">
-                        {projectsData[currentProject].description}
-                      </p>
-                    </div>
-
-                    {/* Links & CTA */}
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-[#30363d] mt-auto">
-                      <div className="flex items-center gap-4">
-                        <a
-                          href={projectsData[currentProject].github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 dark:bg-[#21262d] hover:dark:bg-cyan-950/60 text-white text-sm font-medium hover:border-cyan-500/50 border border-transparent dark:border-[#30363d] transition-all hover:scale-105 shadow-md"
-                        >
-                          <FaGithub className="w-4 h-4" />
-                          <span>Code Repository</span>
-                        </a>
-
-                        {projectsData[currentProject].live && (
-                          <a
-                            href={projectsData[currentProject].live}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-black font-semibold text-sm transition-all hover:scale-105 shadow-md shadow-cyan-500/20"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            <span>Live Demo</span>
-                          </a>
+                        {/* Metrics or Highlight pill */}
+                        {project.metrics && (
+                          <div className="absolute top-2.5 right-2.5">
+                            <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-cyan-400/20 border border-cyan-400/30 text-cyan-300 backdrop-blur-md">
+                              {project.metrics}
+                            </span>
+                          </div>
                         )}
                       </div>
 
-                      <span className="text-xs font-mono text-slate-400 dark:text-[#8d96a0]">
-                        {String(currentProject + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')}
-                      </span>
+                      {/* Content Body - Compacted 10% */}
+                      <div className="p-5 space-y-3">
+                        <h3 className="text-lg font-syne font-bold text-white group-hover:text-cyan-400 transition-colors leading-snug">
+                          {project.title}
+                        </h3>
+
+                        <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                          {project.description}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {project.tags.map(tag => (
+                            <span 
+                              key={tag}
+                              className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-white/5 text-slate-300 border border-white/5"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
 
-            {/* Carousel Dot Indicators & Quick Selector */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 mt-8">
-              {projectsData.map((project, idx) => (
-                <button
-                  key={project.title}
-                  onClick={() => goToProject(idx)}
-                  aria-label={`Jump to ${project.title}`}
-                  className={`transition-all duration-300 rounded-full ${
-                    idx === currentProject
-                      ? 'w-10 h-3 bg-gradient-to-r from-cyan-400 to-indigo-500 shadow-md shadow-cyan-500/30'
-                      : 'w-3 h-3 bg-slate-300 dark:bg-[#30363d] hover:bg-slate-400 dark:hover:bg-[#484f58]'
-                  }`}
-                  title={`${idx + 1}. ${project.title}`}
-                />
-              ))}
-            </div>
-
-            {/* Quick Project Mini Tabs */}
-            <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2">
-              {projectsData.map((project, idx) => (
-                <button
-                  key={project.title}
-                  onClick={() => goToProject(idx)}
-                  className={`p-2 rounded-lg text-left text-xs transition-all border truncate ${
-                    idx === currentProject
-                      ? 'bg-cyan-50 dark:bg-cyan-950/50 border-cyan-500 text-cyan-700 dark:text-cyan-300 font-semibold shadow-sm'
-                      : 'bg-slate-50/60 dark:bg-[#0d1117] border-slate-200 dark:border-[#30363d] text-slate-600 dark:text-[#8d96a0] hover:border-cyan-400 dark:hover:border-cyan-700'
-                  }`}
-                  title={project.title}
-                >
-                  <span className="block opacity-60 text-[10px]">0{idx + 1}</span>
-                  <span className="truncate block">{project.title.split(' ')[0]}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Skills Section */}
-        <section id="skills" className="bg-[#f6f8fa] dark:bg-[#0d1117] border-y border-slate-200 dark:border-[#30363d] py-24 scroll-mt-16 transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div {...fadeInUp} className="flex items-center gap-4 mb-16">
-              <div className="p-3 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400 shadow-sm">
-                <Database className="w-7 h-7" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-[#e6edf3]">Technical Expertise</h2>
-                <p className="text-slate-500 dark:text-[#8d96a0] text-sm mt-1">Core languages, cloud architecture, and development toolkits</p>
-              </div>
-            </motion.div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {/* Column 1 */}
-              <motion.div {...fadeInUp} className="space-y-8">
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-2">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                      <Code2 className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-[#e6edf3]">Languages</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {['Python', 'JavaScript', 'TypeScript', 'Java', 'SQL'].map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3.5 py-1.5 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-sm font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d] shadow-sm"
+                    {/* Footer Actions */}
+                    <div className="p-5 pt-0 flex items-center justify-between border-t border-white/5 mt-3">
+                      <a 
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[11px] font-mono font-medium text-slate-300 hover:text-white transition-colors"
                       >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                        <FaGithub className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>SOURCE CODE</span>
+                      </a>
 
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-2">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                      <Layout className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-[#e6edf3]">Frontend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {['HTML5', 'CSS3', 'Tailwind CSS', 'React', 'Component Libraries', 'UI Frameworks'].map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3.5 py-1.5 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-sm font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d] shadow-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Column 2 */}
-              <motion.div {...fadeInUp} className="space-y-8">
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-2">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                      <Server className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-[#e6edf3]">Backend</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {['Node.js', 'Express.js', 'RESTful API Design', 'Authentication', 'Authorization'].map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3.5 py-1.5 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-sm font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d] shadow-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-2">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                      <Database className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-[#e6edf3]">Databases</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {['MongoDB', 'DynamoDB', 'PostgreSQL', 'Redis'].map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3.5 py-1.5 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-sm font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d] shadow-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Column 3 */}
-              <motion.div {...fadeInUp} className="space-y-8">
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div className="flex items-center gap-3 text-cyan-600 dark:text-cyan-400 mb-2">
-                    <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                      <Award className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-[#e6edf3]">Cloud & DevOps</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {['AWS (EC2, S3, ECS, CloudWatch)', 'Docker', 'GitHub Actions', 'CircleCI'].map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3.5 py-1.5 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-sm font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d] shadow-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 dark:hover:border-cyan-500/40 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-950/20 space-y-5">
-                  <div>
-                    <h3 className="text-xs font-bold text-cyan-600 dark:text-cyan-400 tracking-wider uppercase mb-3">Monitoring & Observability</h3>
-                    <div className="flex flex-wrap gap-2.5 mb-5">
-                      {['ELK Stack', 'OpenSearch', 'CloudWatch'].map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-3 py-1 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-xs font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d]"
+                      {project.live && (
+                        <a 
+                          href={project.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-cyan-400 text-black hover:bg-cyan-300 transition-all shadow-md shadow-cyan-400/10"
                         >
-                          {skill}
-                        </span>
-                      ))}
+                          <span>LIVE DEMO</span>
+                          <ArrowUpRight className="w-3 h-3" />
+                        </a>
+                      )}
                     </div>
-                  </div>
-                  <div>
-                    <h3 className="text-xs font-bold text-cyan-600 dark:text-cyan-400 tracking-wider uppercase mb-3">Development Practices</h3>
-                    <div className="flex flex-wrap gap-2.5">
-                      {['Git', 'Agile (Scrum)', 'Code Reviews', 'MVC Architecture'].map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-3 py-1 bg-slate-50 dark:bg-[#21262d] rounded-lg text-slate-700 dark:text-[#c9d1d9] text-xs font-medium hover:bg-gradient-to-r hover:from-cyan-500 hover:to-indigo-500 hover:text-white dark:hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 cursor-default border border-slate-200 dark:border-[#30363d]"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-
-        {/* Coursework & Education Section */}
-        <section id="education" className="bg-white dark:bg-[#161b22] py-24 border-y border-slate-200 dark:border-[#30363d] scroll-mt-16 transition-colors duration-300">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            <motion.div {...fadeInUp}>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400">
-                  <Award className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-[#e6edf3]">Coursework & Foundations</h2>
-                  <p className="text-slate-500 dark:text-[#8d96a0] text-sm mt-1">Specialized engineering disciplines</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {[
-                  { name: 'Data Structures & Algorithms', tag: 'Core' },
-                  { name: 'Full Stack Web Development', tag: 'Production' },
-                  { name: 'Object-Oriented Programming', tag: 'Architecture' },
-                  { name: 'Database Management Systems', tag: 'Data' },
-                  { name: 'Cloud Computing & Distributed Systems', tag: 'Infra' }
-                ].map((course) => (
-                  <div
-                    key={course.name}
-                    className="flex items-center gap-2 bg-[#f6f8fa] dark:bg-[#0d1117] text-slate-800 dark:text-[#c9d1d9] px-5 py-2.5 rounded-2xl font-medium border border-slate-200 dark:border-[#30363d] shadow-sm hover:border-cyan-500/40 hover:shadow-md hover:scale-105 transition-all duration-300 cursor-default"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                    <span>{course.name}</span>
-                    <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-cyan-50 dark:bg-[#21262d] text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/30">
-                      {course.tag}
-                    </span>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </AnimatePresence>
             </motion.div>
 
-            <motion.div {...scrollScale}>
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-500/20 text-cyan-600 dark:text-cyan-400">
-                  <GraduationCap className="w-6 h-6" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-[#e6edf3]">Education</h2>
-                  <p className="text-slate-500 dark:text-[#8d96a0] text-sm mt-1">Academic foundation & degree</p>
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-slate-50 to-cyan-50/20 dark:from-[#0d1117] dark:to-[#161b22] rounded-3xl p-8 md:p-10 shadow-lg border border-slate-200 dark:border-[#30363d] hover:border-cyan-500/40 transition-all duration-500 hover:shadow-2xl">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div>
-                    <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/30 mb-3">
-                      Artificial Intelligence & Data Science
-                    </span>
-                    <h3 className="text-2xl font-bold text-slate-900 dark:text-[#e6edf3]">Bachelor of Technology (B.Tech)</h3>
-                    <p className="text-slate-700 dark:text-[#c9d1d9] font-medium text-base mt-2 flex items-center gap-2">
-                      <span>KPR Institute of Engineering and Technology</span>
-                    </p>
-                    <p className="text-slate-500 dark:text-[#8d96a0] text-sm mt-1">Coimbatore, Tamil Nadu, India</p>
-                  </div>
-                  <div className="text-left md:text-right">
-                    <div className="inline-block bg-white dark:bg-[#161b22] border border-cyan-200 dark:border-[#30363d] px-5 py-2.5 rounded-2xl shadow-sm">
-                      <span className="text-xs text-slate-500 dark:text-[#8d96a0] uppercase tracking-wider block font-semibold">Cumulative GPA</span>
-                      <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">7.0 / 10.0</span>
-                    </div>
-                    <p className="text-slate-500 dark:text-[#8d96a0] font-medium text-sm mt-2">2021 – 2025</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </section>
 
-        {/* Contact Form Section */}
-        <section id="contact" className="py-24 scroll-mt-16 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-300">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              {...fadeInUp}
-              className="text-center space-y-4 mb-12"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-cyan-50 dark:bg-[#161b22] border border-cyan-200 dark:border-[#30363d] flex items-center justify-center text-cyan-600 dark:text-cyan-400 mx-auto shadow-sm">
-                <MessageSquare className="w-8 h-8" />
+        {/* ======================================================== */}
+        {/* SKILLS / ARSENAL SECTION: Categorized Tech Matrix */}
+        {/* ======================================================== */}
+        <section id="skills" className="py-28 px-4 sm:px-6 lg:px-8 border-b border-white/5 bg-white/[0.01]">
+          <div className="max-w-7xl mx-auto space-y-12">
+            
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-3 font-mono text-xs text-cyan-400 uppercase tracking-widest mb-3">
+                  <span>[05 / ARSENAL]</span>
+                  <span className="h-px w-12 bg-cyan-400/30"></span>
+                  <span>CORE COMPETENCIES</span>
+                </div>
+                <h2 className="font-syne font-black text-4xl sm:text-5xl text-white tracking-tight">
+                  TECH STACK MATRIX
+                </h2>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-[#e6edf3]">Let's Connect</h2>
-              <p className="text-lg text-slate-600 dark:text-[#8d96a0]">
-                Have a question, collaboration idea, or want to work together? Leave a message below.
+              <p className="text-slate-400 font-mono text-xs uppercase max-w-sm">
+                A hardened engineering arsenal built for resilience, velocity, and scale.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.form
-              {...scrollScale}
-              className="bg-white/90 dark:bg-[#161b22] backdrop-blur-md rounded-3xl p-8 md:p-10 shadow-xl border border-slate-200 dark:border-[#30363d] space-y-6 transition-colors duration-300 hover:border-cyan-500/40"
-            >
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium text-slate-700 dark:text-[#c9d1d9]">Name</label>
-                  <input type="text" id="name" className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#0d1117] text-slate-900 dark:text-[#e6edf3] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-colors" placeholder="John Doe" />
+            <div className="grid md:grid-cols-3 gap-6">
+              
+              {/* Category 1: Languages & Core */}
+              <div className="p-8 rounded-3xl bg-[#101218] border border-white/10 hover:border-cyan-400/40 transition-all space-y-6">
+                <div className="flex items-center gap-3 text-cyan-400">
+                  <div className="p-2.5 rounded-2xl bg-cyan-500/10 border border-cyan-400/20">
+                    <Code2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-syne font-bold text-xl text-white">Languages</h3>
+                    <span className="font-mono text-xs text-slate-400">Foundational Syntax</span>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-slate-700 dark:text-[#c9d1d9]">Email</label>
-                  <input type="email" id="email" className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#0d1117] text-slate-900 dark:text-[#e6edf3] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-colors" placeholder="john@example.com" />
+
+                <div className="flex flex-wrap gap-2">
+                  {['TypeScript', 'JavaScript', 'Python', 'Java', 'SQL'].map(skill => (
+                    <span 
+                      key={skill}
+                      className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-mono transition-colors"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="pt-4 border-t border-white/5 space-y-3">
+                  <span className="font-mono text-xs text-slate-400 uppercase tracking-wider block">Specializations</span>
+                  <div className="flex flex-wrap gap-2">
+                    {['Data Structures & Algorithms', 'Object-Oriented Design', 'Async Architecture'].map(item => (
+                      <span key={item} className="px-3 py-1 rounded-lg bg-cyan-400/10 text-cyan-300 text-[11px] font-mono border border-cyan-400/20">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium text-slate-700 dark:text-[#c9d1d9]">Message</label>
-                <textarea id="message" rows={4} className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#0d1117] text-slate-900 dark:text-[#e6edf3] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-colors resize-none" placeholder="Your message here..."></textarea>
+
+              {/* Category 2: Backend & Distributed */}
+              <div className="p-8 rounded-3xl bg-[#101218] border border-white/10 hover:border-blue-400/40 transition-all space-y-6">
+                <div className="flex items-center gap-3 text-blue-400">
+                  <div className="p-2.5 rounded-2xl bg-blue-500/10 border border-blue-400/20">
+                    <Server className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-syne font-bold text-xl text-white">Backend & Queues</h3>
+                    <span className="font-mono text-xs text-slate-400">High-Concurrency</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {['Node.js', 'Express.js', 'Django REST', 'Celery', 'Redis', 'RESTful APIs', 'RBAC'].map(skill => (
+                    <span 
+                      key={skill}
+                      className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-mono transition-colors"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="pt-4 border-t border-white/5 space-y-3">
+                  <span className="font-mono text-xs text-slate-400 uppercase tracking-wider block">Databases & Storage</span>
+                  <div className="flex flex-wrap gap-2">
+                    {['PostgreSQL', 'DynamoDB', 'MongoDB', 'AWS S3'].map(item => (
+                      <span key={item} className="px-3 py-1 rounded-lg bg-blue-400/10 text-blue-300 text-[11px] font-mono border border-blue-400/20">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <button type="button" className="w-full bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:via-indigo-500 hover:to-purple-500 text-white font-medium py-3.5 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 cursor-pointer">
-                <Send className="w-4 h-4" /> Send Message
-              </button>
-            </motion.form>
+
+              {/* Category 3: Cloud, AI & DevOps */}
+              <div className="p-8 rounded-3xl bg-[#101218] border border-white/10 hover:border-purple-400/40 transition-all space-y-6">
+                <div className="flex items-center gap-3 text-purple-400">
+                  <div className="p-2.5 rounded-2xl bg-purple-500/10 border border-purple-400/20">
+                    <Cpu className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-syne font-bold text-xl text-white">Cloud & AI Systems</h3>
+                    <span className="font-mono text-xs text-slate-400">Infra & Machine Learning</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {['AWS ECS & EC2', 'Docker', 'CloudWatch', 'Elasticsearch', 'Kibana', 'PyTorch', 'XGBoost', 'VGG-19', 'SHAP'].map(skill => (
+                    <span 
+                      key={skill}
+                      className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-mono transition-colors"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="pt-4 border-t border-white/5 space-y-3">
+                  <span className="font-mono text-xs text-slate-400 uppercase tracking-wider block">Frontend Capabilities</span>
+                  <div className="flex flex-wrap gap-2">
+                    {['React', 'Next.js', 'Tailwind CSS', 'Vite', 'Framer Motion'].map(item => (
+                      <span key={item} className="px-3 py-1 rounded-lg bg-purple-400/10 text-purple-300 text-[11px] font-mono border border-purple-400/20">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </section>
+
+        {/* ======================================================== */}
+        {/* EDUCATION & COURSEWORK SECTION: Academic Credential */}
+        {/* ======================================================== */}
+        <section id="education" className="py-28 px-4 sm:px-6 lg:px-8 border-b border-white/5 relative">
+          <div className="max-w-7xl mx-auto space-y-12">
+            
+            <div className="flex items-center gap-3 font-mono text-xs text-cyan-400 uppercase tracking-widest mb-3">
+              <span>[06 / EDUCATION]</span>
+              <span className="h-px w-12 bg-cyan-400/30"></span>
+              <span>ACADEMIC FOUNDATION</span>
+            </div>
+
+            <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-white/[0.04] to-transparent border border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              
+              <div className="space-y-3">
+                <span className="px-3.5 py-1 rounded-full text-xs font-mono bg-cyan-400/10 border border-cyan-400/30 text-cyan-300">
+                  ARTIFICIAL INTELLIGENCE & DATA SCIENCE
+                </span>
+                <h3 className="font-syne font-black text-3xl sm:text-4xl text-white">
+                  Bachelor of Technology (B.Tech)
+                </h3>
+                <p className="text-base text-slate-300 font-medium">
+                  KPR Institute of Engineering and Technology <span className="text-cyan-400">•</span> Coimbatore, Tamil Nadu
+                </p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {['Data Structures & Algorithms', 'Full Stack Development', 'OOP', 'DBMS', 'Distributed Systems'].map(c => (
+                    <span key={c} className="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:text-right shrink-0">
+                <div className="inline-block p-6 rounded-2xl bg-black/60 border border-white/10 text-left lg:text-right">
+                  <span className="text-xs font-mono text-slate-400 uppercase tracking-widest block">Cumulative GPA</span>
+                  <span className="font-syne font-black text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">
+                    7.0 / 10.0
+                  </span>
+                  <span className="block text-xs font-mono text-slate-400 mt-1">2021 — 2025</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ======================================================== */}
+        {/* CONTACT SECTION: Dedicated High-Impact Terminal / Outreach */}
+        {/* ======================================================== */}
+        <section id="contact" className="py-28 px-4 sm:px-6 lg:px-8 relative bg-white/[0.01]">
+          <div className="max-w-4xl mx-auto space-y-12">
+            
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 font-mono text-xs text-cyan-400 uppercase tracking-widest">
+                <span>[07 / OUTREACH]</span>
+                <span className="h-px w-12 bg-cyan-400/30"></span>
+                <span>GET IN TOUCH</span>
+              </div>
+              <h2 className="font-syne font-black text-5xl sm:text-6xl text-white tracking-tight">
+                LET'S BUILD SOMETHING <span className="text-stroke">EXCEPTIONAL</span>.
+              </h2>
+              <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto">
+                Have a challenging project, an open role, or an architecture problem? My inbox is always open.
+              </p>
+            </div>
+
+            <div className="p-8 sm:p-10 rounded-3xl bg-[#101218] border border-white/10 space-y-6">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <a 
+                  href="mailto:srivigneshwaran.i@gmail.com"
+                  className="p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-4 transition-all hover:border-cyan-400/40 group"
+                >
+                  <div className="p-3 rounded-xl bg-cyan-400/10 text-cyan-400 group-hover:scale-110 transition-transform">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[11px] text-slate-400 uppercase block">Direct Email</span>
+                    <span className="text-white font-syne font-bold text-sm truncate block">
+                      srivigneshwaran.i@gmail.com
+                    </span>
+                  </div>
+                </a>
+
+                <a 
+                  href="https://www.linkedin.com/in/srivigneshwaran-i-115163229"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-4 transition-all hover:border-blue-400/40 group"
+                >
+                  <div className="p-3 rounded-xl bg-blue-400/10 text-blue-400 group-hover:scale-110 transition-transform">
+                    <FaLinkedin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[11px] text-slate-400 uppercase block">Connect on LinkedIn</span>
+                    <span className="text-white font-syne font-bold text-sm block">
+                      srivigneshwaran-i
+                    </span>
+                  </div>
+                </a>
+              </div>
+
+              <div className="pt-6 border-t border-white/10 text-center">
+                <a 
+                  href="mailto:srivigneshwaran.i@gmail.com?subject=Opportunity%20Discussion"
+                  className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-cyan-400 hover:bg-cyan-300 text-black font-syne font-black text-sm tracking-wide transition-all transform hover:scale-105 shadow-xl shadow-cyan-400/20 cursor-pointer"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>START A CONVERSATION</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
       </main>
 
-      <footer className="bg-white dark:bg-[#0d1117] border-t border-slate-200 dark:border-[#30363d] py-12 transition-colors duration-300">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-slate-500 dark:text-[#8d96a0] font-medium">
-            © {new Date().getFullYear()} Srivigneshwaran I. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a href="https://github.com/srivigneshwaran" className="text-slate-400 dark:text-[#8d96a0] hover:text-cyan-400 transition-colors font-medium">GitHub</a>
-            <a href="https://www.linkedin.com/in/srivigneshwaran-i-115163229" className="text-slate-400 dark:text-[#8d96a0] hover:text-cyan-400 transition-colors font-medium">LinkedIn</a>
+      {/* Modern Minimalist Editorial Footer */}
+      <footer className="border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8 bg-[#06070a]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs text-slate-400">
+          <div>
+            © {new Date().getFullYear()} SRIVIGNESHWARAN I. ENGINEERED WITH PRECISION.
+          </div>
+          <div className="flex items-center gap-6">
+            <a href="https://github.com/srivigneshwaran" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
+              GITHUB
+            </a>
+            <a href="https://www.linkedin.com/in/srivigneshwaran-i-115163229" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
+              LINKEDIN
+            </a>
+            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-cyan-400 transition-colors uppercase">
+              BACK TO TOP ↑
+            </button>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
-
-export default App;
