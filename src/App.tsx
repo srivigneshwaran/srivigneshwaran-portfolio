@@ -8,24 +8,31 @@ import smtImage from './assets/SMT.png';
 import pyDsaImage from './assets/pyDSA.png';
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 35 },
+  initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
-  transition: { duration: 0.6, ease: "easeOut" as const }
+  viewport: { once: false, amount: 0.15 },
+  transition: { duration: 0.65, ease: "easeOut" as const }
 };
 
 const scrollScale = {
-  initial: { opacity: 0, scale: 0.92, y: 30 },
+  initial: { opacity: 0, scale: 0.9, y: 30 },
   whileInView: { opacity: 1, scale: 1, y: 0 },
-  viewport: { once: true, margin: "-70px" },
+  viewport: { once: false, amount: 0.15 },
   transition: { duration: 0.7, ease: "easeOut" as const }
 };
 
 const scrollSlideLeft = {
-  initial: { opacity: 0, x: -40 },
+  initial: { opacity: 0, x: -50 },
   whileInView: { opacity: 1, x: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.6, ease: "easeOut" as const }
+  viewport: { once: false, amount: 0.15 },
+  transition: { duration: 0.65, ease: "easeOut" as const }
+};
+
+const scrollSlideRight = {
+  initial: { opacity: 0, x: 50 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: false, amount: 0.15 },
+  transition: { duration: 0.65, ease: "easeOut" as const }
 };
 
 const projectsData = [
@@ -180,32 +187,51 @@ function App() {
     }
   }, [isDarkMode]);
 
+  const [activeSection, setActiveSection] = useState('about');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['about', 'experience', 'projects', 'skills', 'education', 'contact'];
+      const scrollY = window.pageYOffset;
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop - 120;
+          const height = el.offsetHeight;
+          if (scrollY >= top && scrollY < top + height) {
+            setActiveSection(sectionId);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, id: string) => {
     e.preventDefault();
+    setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      const offset = 64; // Navbar height
+      const offset = 72; // Navbar height + margin
       const elementPosition = element.getBoundingClientRect().top;
       const startPosition = window.pageYOffset;
       const targetPosition = elementPosition + startPosition - offset;
       const distance = targetPosition - startPosition;
-      const duration = 1200; // 1.2 seconds for a slow, premium feel
+      const duration = Math.min(850, Math.max(450, Math.abs(distance) * 0.45));
       let start: number | null = null;
 
-      // Easing function: easeInOutQuart
-      const ease = (time: number, start: number, change: number, duration: number) => {
-        time /= duration / 2;
-        if (time < 1) return change / 2 * time * time * time * time + start;
-        time -= 2;
-        return -change / 2 * (time * time * time * time - 2) + start;
-      };
+      // Smooth custom ease-in-out cubic-bezier
+      const easeInOutCubic = (t: number) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
       const animation = (currentTime: number) => {
         if (start === null) start = currentTime;
         const timeElapsed = currentTime - start;
-        const nextPosition = ease(timeElapsed, startPosition, distance, duration);
+        const progress = Math.min(timeElapsed / duration, 1);
+        const easeProgress = easeInOutCubic(progress);
 
-        window.scrollTo(0, nextPosition);
+        window.scrollTo(0, startPosition + distance * easeProgress);
 
         if (timeElapsed < duration) {
           requestAnimationFrame(animation);
@@ -240,11 +266,37 @@ function App() {
             Srivigneshwaran I
           </span>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#about" onClick={(e) => scrollToSection(e, 'about')} className="text-sm font-medium text-slate-600 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-all hover:scale-105">About</a>
-            <a href="#experience" onClick={(e) => scrollToSection(e, 'experience')} className="text-sm font-medium text-slate-600 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-all hover:scale-105">Experience</a>
-            <a href="#projects" onClick={(e) => scrollToSection(e, 'projects')} className="text-sm font-medium text-slate-600 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-all hover:scale-105">Projects</a>
-            <a href="#skills" onClick={(e) => scrollToSection(e, 'skills')} className="text-sm font-medium text-slate-600 dark:text-[#8d96a0] hover:text-cyan-600 dark:hover:text-cyan-400 transition-all hover:scale-105">Skills</a>
+          <div className="hidden md:flex items-center gap-1.5 p-1 rounded-full bg-slate-100/70 dark:bg-[#161b22]/70 border border-slate-200 dark:border-[#30363d]/80 backdrop-blur-sm">
+            {[
+              { id: 'about', label: 'About' },
+              { id: 'experience', label: 'Experience' },
+              { id: 'projects', label: 'Projects' },
+              { id: 'skills', label: 'Skills' },
+              { id: 'education', label: 'Education' }
+            ].map((tab) => {
+              const isActive = activeSection === tab.id;
+              return (
+                <a
+                  key={tab.id}
+                  href={`#${tab.id}`}
+                  onClick={(e) => scrollToSection(e, tab.id)}
+                  className={`relative px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-300 ${
+                    isActive
+                      ? 'text-cyan-700 dark:text-cyan-300'
+                      : 'text-slate-600 dark:text-[#8d96a0] hover:text-slate-900 dark:hover:text-[#e6edf3]'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeNavTab"
+                      className="absolute inset-0 rounded-full bg-white dark:bg-[#21262d] shadow-sm border border-slate-200 dark:border-cyan-500/30"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
+                </a>
+              );
+            })}
           </div>
 
           <div className="flex gap-4 items-center">
@@ -399,7 +451,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="relative">
+              <motion.div {...scrollSlideRight} className="relative">
                 <div className="bg-white/90 dark:bg-[#161b22] backdrop-blur-md rounded-3xl p-8 md:p-10 border border-slate-200 dark:border-[#30363d] shadow-xl dark:shadow-black/40 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-2xl">
                   <div className="md:grid md:grid-cols-4 md:gap-8">
                     <div className="md:text-right pb-4 md:pb-0 md:pr-4 md:border-r border-slate-200 dark:border-[#30363d]">
@@ -458,7 +510,7 @@ function App() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -467,9 +519,9 @@ function App() {
         <section id="projects" className="bg-white dark:bg-[#161b22] py-24 border-y border-slate-200 dark:border-[#30363d]/80 scroll-mt-16 transition-colors duration-300">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header with Navigation Controls */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
+            <motion.div {...fadeInUp} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
               <div className="flex items-center gap-4">
-                <div className="p-2.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60">
+                <div className="p-2.5 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800/60 shadow-sm">
                   <Code2 className="w-7 h-7" />
                 </div>
                 <div>
@@ -514,7 +566,7 @@ function App() {
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
-            </div>
+            </motion.div>
 
             {/* 3D Rotating Card Display Container */}
             <div
