@@ -1,5 +1,5 @@
 # srivigneshwaran-portfolio
-Personal portfolio website showcasing my projects, skills, experience, and achievements as a Software Developer.
+Personal portfolio website showcasing my projects, skills, credentials, and achievements as a Data Science Apprentice & Software Developer.
 
 # React + TypeScript + Vite
 
